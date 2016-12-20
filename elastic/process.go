@@ -5,14 +5,9 @@
 package elastic
 
 import (
-	"bytes"
-//	"fmt"
 	"log"
 	"os"
-//	"time"
-
 	"golang.org/x/net/context"
-
 	elastic "gopkg.in/olivere/elastic.v5"
 )
 
@@ -90,7 +85,7 @@ func Process_json_bytes(index string,byteArray []byte) {
 		}
 	}
 
-	n := bytes.IndexByte(byteArray, 0)
+	n := len(byteArray)
 	s := string(byteArray[:n])
 
 	_, err = client.Index().
