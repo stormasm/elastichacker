@@ -21,7 +21,6 @@ import (
 	"github.com/attic-labs/noms/go/types"
 )
 
-const SEARCHLIMIT = 100
 const HNWINDOW = 14 * 24 * 60 * 60 // 2 weeks is the hacker news limit for editing
 
 type datum struct {
@@ -139,47 +138,6 @@ func workerPool(count int, work func(), done func()) {
 		close(workerDone)
 		done()
 	}()
-}
-
-func mapFindFromKey(mm types.Map, value int) (types.Value, types.Value) {
-
-	for i := 0; i < SEARCHLIMIT; i += 1 {
-		midKey := types.Number(value - i)
-		midVal, ok := mm.MaybeGet(midKey)
-		if ok {
-			_, ok = midVal.(types.Struct).MaybeGet("time")
-			if ok {
-				return midKey, midVal
-			}
-		}
-	}
-
-	panic("nothing found")
-}
-
-func mapFindKeyBefore(mm types.Map, time int64) (types.Number, types.Value) {
-	minKey, _ := mm.First()
-	maxKey, _ := mm.Last()
-
-	for i := 0; i < SEARCHLIMIT; i += 1 {
-		midIndex := int(minKey.(types.Number) + (maxKey.(types.Number)-minKey.(types.Number))/2)
-
-		midKey, midVal := mapFindFromKey(mm, midIndex)
-
-		if minKey == midKey {
-			return midKey.(types.Number), midVal
-		}
-
-		midTime := midVal.(types.Struct).Get("time").(types.Number)
-
-		if time < int64(midTime) {
-			maxKey = midKey
-		} else {
-			minKey = midKey
-		}
-	}
-
-	panic("confusing")
 }
 
 func makeClient() *http.Client {
