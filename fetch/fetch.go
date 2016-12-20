@@ -14,11 +14,8 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/zabawaba99/firego"
-
-	"github.com/attic-labs/noms/go/datas"
-	"github.com/attic-labs/noms/go/spec"
 	"github.com/attic-labs/noms/go/types"
+	"github.com/zabawaba99/firego"
 )
 
 const HNWINDOW = 14 * 24 * 60 * 60 // 2 weeks is the hacker news limit for editing
@@ -41,32 +38,11 @@ func main() {
 		flag.Usage()
 		return
 	}
-	spec, err := spec.ForDataset(flag.Arg(0))
-	if err != nil {
-		fmt.Printf("Could not parse destination dataset: %s\n", err)
-		return
-	}
-	db := spec.GetDatabase()
-	defer db.Close()
-	ds := spec.GetDataset()
-
-	hv, ok := ds.MaybeHeadValue()
-
-	if !ok {
-		if start != -1 {
-			fmt.Fprint(os.Stderr, "-s is invalid for a new dataset")
-			return
-		}
-
-		start = time.Now().Unix() - HNWINDOW
-
-		// Our first sync really just needs to get all the read-only data, therefore we don't need to worry about updates. We'll get potentially changed data later.
-		hv = bigSync(ds)
-		fmt.Println(hv.Hash().String())
-	}
+	hv := bigSync()
+	fmt.Println(hv.Hash().String())
 }
 
-func bigSync(ds datas.Dataset) types.Value {
+func bigSync() types.Value {
 	max := firego.New("https://hacker-news.firebaseio.com/v0/maxitem", nil)
 	var maxItem float64
 	if err := max.Value(&maxItem); err != nil {
@@ -76,7 +52,7 @@ func bigSync(ds datas.Dataset) types.Value {
 	newIndex := make(chan float64, 1000)
 	newDatum := make(chan datum, 100)
 	streamData := make(chan types.Value, 100)
-	newMap := types.NewStreamingMap(ds.Database(), streamData)
+	newMap := types.NewStreamingMap(types.NewTestValueStore(), streamData)
 
 	go func() {
 		for i := 8432709.0; i < 8432712.0; i++ {
