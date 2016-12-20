@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net"
 	"net/http"
@@ -123,7 +124,7 @@ func churn(newIndex <-chan float64, newData chan<- datum) {
 			fb := firego.New(url, client)
 
 			var val map[string]interface{}
-			err := fb.Value(&val)
+			err := Value(*fb, &val)
 			if err != nil {
 				if attempts > 0 {
 					fmt.Printf("failed for %d (%d times) %s\n", id, attempts, err)
@@ -175,4 +176,13 @@ func sendDatum(newData chan<- datum, name string, id float64, data map[string]ty
 	}
 
 	newData <- d
+}
+
+// Value gets the value of the Firebase reference.
+func Value(fb firego.Firebase, v interface{}) error {
+	bytes, err := fb.DoRequest("GET", nil)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(bytes, v)
 }
