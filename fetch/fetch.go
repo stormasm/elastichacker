@@ -11,8 +11,6 @@ import (
 	"github.com/zabawaba99/firego"
 )
 
-const HNWINDOW = 14 * 24 * 60 * 60 // 2 weeks is the hacker news limit for editing
-
 type datum struct {
 	index float64
 	value types.Struct
