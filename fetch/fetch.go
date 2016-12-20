@@ -1,16 +1,9 @@
-// Copyright 2016 Adam H. Leventhal. All rights reserved.
-// Licensed under the Apache License, version 2.0:
-// http://www.apache.org/licenses/LICENSE-2.0
-
 package main
 
 import (
-	"flag"
 	"fmt"
 	"net"
 	"net/http"
-	"os"
-	"path"
 	"reflect"
 	"time"
 
@@ -26,29 +19,11 @@ type datum struct {
 }
 
 func main() {
-	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: %s <dst>\n", path.Base(os.Args[0]))
-	}
-
-	var start int64
-
-	flag.Int64Var(&start, "s", -1, "start time in seconds since the epoch")
-	flag.Parse()
-	if flag.NArg() != 1 {
-		flag.Usage()
-		return
-	}
 	hv := bigSync()
 	fmt.Println(hv.Hash().String())
 }
 
 func bigSync() types.Value {
-	max := firego.New("https://hacker-news.firebaseio.com/v0/maxitem", nil)
-	var maxItem float64
-	if err := max.Value(&maxItem); err != nil {
-		panic(err)
-	}
-
 	newIndex := make(chan float64, 1000)
 	newDatum := make(chan datum, 100)
 	streamData := make(chan types.Value, 100)
@@ -68,19 +43,7 @@ func bigSync() types.Value {
 		close(newDatum)
 	})
 
-	start := time.Now()
-	count := 0
-
 	for datum := range newDatum {
-		count++
-		if count%10000 == 0 {
-			dur := time.Since(start)
-			dur -= dur % time.Second
-			eta := time.Duration(float64(dur) * (maxItem - float64(count)) / float64(count))
-			eta -= eta % time.Second
-			fmt.Printf("sent: %d/%d  elapsed: %s  eta: %s\n", count, int(maxItem), dur, eta)
-		}
-
 		streamData <- types.Number(datum.index)
 		streamData <- datum.value
 	}
