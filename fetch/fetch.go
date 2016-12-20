@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/attic-labs/noms/go/types"
-	"github.com/zabawaba99/firego"
+	"github.com/stormasm/firego"
 )
 
 type datum struct {
