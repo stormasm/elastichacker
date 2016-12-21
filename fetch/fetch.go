@@ -112,7 +112,8 @@ func churn(newIndex <-chan float64, newData chan<- datum) {
 		fmt.Println("Number of bytes copied = ",numofbytes)
 		name, data := processBytes(id, dst)
 		fmt.Println(id, name)
-		elastic.Process_json_bytes("hackernews", name, string(id), bytes)
+		// elastic.Process_json_bytes("hackernews", name, string(id), bytes)
+		// send data to redis
 		sendDatum(newData, name, index, data)
 	}
 }
