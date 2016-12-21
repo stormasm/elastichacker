@@ -102,69 +102,43 @@ func churn(newIndex <-chan float64, newData chan<- datum) {
 	for index := range newIndex {
 		id := int(index)
 		url := fmt.Sprintf("https://hacker-news.firebaseio.com/v0/item/%d", id)
-		for attempts := 0; true; attempts++ {
 
-			if attempts > 0 {
-				// If we're having no luck after this much time, we'll declare this sucker the walking undead and try to get to it later.
-				// XXX Some of these zombies don't exist on HN itself while others do; a nice piece of future work might be to use a more traditional HTML scraper to try to fix these up.
-				if attempts > 10 {
-					fmt.Printf("Braaaaiiinnnssss %d\n", id)
-					sendDatum(newData, "zombie", index, map[string]types.Value{
-						"id":   types.Number(index),
-						"type": types.String("zombie"),
-					})
-					break
-				}
-				if attempts == 5 {
-					client = makeClient()
-				}
-				time.Sleep(time.Millisecond * 100 * time.Duration(attempts))
-			}
+		fb := firego.New(url, client)
 
-			fb := firego.New(url, client)
-
-			var val map[string]interface{}
-			err := Value(*fb, &val)
-			if err != nil {
-				if attempts > 0 {
-					fmt.Printf("failed for %d (%d times) %s\n", id, attempts, err)
-				}
-				continue
-			}
-
-			data := make(map[string]types.Value)
-			for k, v := range val {
-				switch vv := v.(type) {
-				case string:
-					data[k] = types.String(vv)
-				case float64:
-					data[k] = types.Number(vv)
-				case bool:
-					data[k] = types.Bool(vv)
-				case []interface{}:
-					ll := types.NewList()
-					for _, elem := range vv {
-						ll = ll.Append(types.Number(elem.(float64)))
-					}
-					data[k] = ll
-				default:
-					panic(reflect.TypeOf(v))
-				}
-			}
-
-			name, ok := val["type"]
-			if !ok {
-				fmt.Printf("no type for id %d; trying again\n", id)
-				continue
-			}
-
-			if attempts > 1 {
-				fmt.Printf("success for %d after %d attempts\n", id, attempts)
-			}
-
-			sendDatum(newData, name.(string), index, data)
-			break
+		var val map[string]interface{}
+		err := Value(*fb, &val)
+		if err != nil {
+			fmt.Printf("failed for %d %s\n", id, err)
 		}
+
+		data := make(map[string]types.Value)
+		for k, v := range val {
+			switch vv := v.(type) {
+			case string:
+				data[k] = types.String(vv)
+			case float64:
+				data[k] = types.Number(vv)
+			case bool:
+				data[k] = types.Bool(vv)
+			case []interface{}:
+				ll := types.NewList()
+				for _, elem := range vv {
+					ll = ll.Append(types.Number(elem.(float64)))
+				}
+				data[k] = ll
+			default:
+				panic(reflect.TypeOf(v))
+			}
+		}
+
+		name, ok := val["type"]
+		if !ok {
+			fmt.Printf("no type for id %d; trying again\n", id)
+			continue
+		}
+
+		sendDatum(newData, name.(string), index, data)
+
 	}
 }
 
