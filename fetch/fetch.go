@@ -102,13 +102,16 @@ func churn(newIndex <-chan float64, newData chan<- datum) {
 	for index := range newIndex {
 		id := int(index)
 		url := fmt.Sprintf("https://hacker-news.firebaseio.com/v0/item/%d", id)
-
 		fb := firego.New(url, client)
+		bytes, err := fb.DoRequest("GET", nil)
+		if err != nil {
+			fmt.Printf("DoRequest failed for %d %s\n", id, err)
+		}
 
 		var val map[string]interface{}
-		err := Value(*fb, &val)
+		err = json.Unmarshal(bytes, &val)
 		if err != nil {
-			fmt.Printf("failed for %d %s\n", id, err)
+			fmt.Printf("json Unmarshal failed for %d %s\n", id, err)
 		}
 
 		data := make(map[string]types.Value)
@@ -150,13 +153,4 @@ func sendDatum(newData chan<- datum, name string, id float64, data map[string]ty
 	}
 
 	newData <- d
-}
-
-// Value gets the value of the Firebase reference.
-func Value(fb firego.Firebase, v interface{}) error {
-	bytes, err := fb.DoRequest("GET", nil)
-	if err != nil {
-		return err
-	}
-	return json.Unmarshal(bytes, v)
 }
