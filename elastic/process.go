@@ -5,13 +5,13 @@
 package elastic
 
 import (
-	"log"
-	"os"
 	"golang.org/x/net/context"
 	elastic "gopkg.in/olivere/elastic.v5"
+	"log"
+	"os"
 )
 
-func Process_json_string(index string,json string) {
+func Process_json_string(index, itype, id string, json string) {
 	errorlog := log.New(os.Stdout, "APP ", log.LstdFlags)
 
 	// Obtain a client. You can also provide your own HTTP client here.
@@ -41,8 +41,8 @@ func Process_json_string(index string,json string) {
 
 	_, err = client.Index().
 		Index(index).
-		Type("tweet").
-		Id("9").
+		Type(itype).
+		Id(id).
 		BodyString(json).
 		Do(context.Background())
 	if err != nil {
@@ -57,7 +57,7 @@ func Process_json_string(index string,json string) {
 	}
 }
 
-func Process_json_bytes(index string,byteArray []byte) {
+func Process_json_bytes(index, itype, id string, byteArray []byte) {
 	errorlog := log.New(os.Stdout, "APP ", log.LstdFlags)
 
 	// Obtain a client. You can also provide your own HTTP client here.
@@ -90,8 +90,8 @@ func Process_json_bytes(index string,byteArray []byte) {
 
 	_, err = client.Index().
 		Index(index).
-		Type("tweet").
-		Id("8").
+		Type(itype).
+		Id(id).
 		BodyString(s).
 		Do(context.Background())
 	if err != nil {
