@@ -10,6 +10,7 @@ import (
 
 	"github.com/attic-labs/noms/go/types"
 	"github.com/stormasm/firego"
+	"github.com/stormasm/hackerelastic1/elastic"
 )
 
 type datum struct {
@@ -101,6 +102,8 @@ func churn(newIndex <-chan float64, newData chan<- datum) {
 			fmt.Printf("DoRequest failed for %d %s\n", id, err)
 		}
 		name, data := processBytes(id, bytes)
+		fmt.Println(id, name)
+		elastic.Process_json_bytes("hackernews", name, string(id), bytes)
 		sendDatum(newData, name, index, data)
 	}
 }
