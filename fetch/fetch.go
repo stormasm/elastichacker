@@ -11,6 +11,7 @@ import (
 	"github.com/attic-labs/noms/go/types"
 	"github.com/stormasm/firego"
 	//"github.com/stormasm/hackerelastic1/elastic"
+	"github.com/stormasm/hackerelastic1/redisc"
 )
 
 type datum struct {
@@ -116,6 +117,7 @@ func churn(newIndex <-chan float64, newData chan<- datum) {
 		fmt.Println(id, name)
 		// elastic.Process_json_bytes("hackernews", name, string(id), bytes)
 		// send data to redis
+		redisc.Process_json_test("hackernews",name,id)
 		sendDatum(newData, name, index, data)
 	}
 }
