@@ -21,6 +21,10 @@ type datum struct {
 func main() {
 	hv := bigSync()
 	fmt.Println(hv.Hash().String())
+	fmt.Print("Enter text: ")
+	var input string
+	fmt.Scanln(&input)
+	fmt.Println(input)
 }
 
 func bigSync() types.Value {
@@ -101,7 +105,12 @@ func churn(newIndex <-chan float64, newData chan<- datum) {
 		if err != nil {
 			fmt.Printf("DoRequest failed for %d %s\n", id, err)
 		}
-		name, data := processBytes(id, bytes)
+		n := len(bytes)
+		var dst []byte
+		dst = make([]byte, n, n)
+		numofbytes := copy(dst,bytes)
+		fmt.Println("Number of bytes copied = ",numofbytes)
+		name, data := processBytes(id, dst)
 		fmt.Println(id, name)
 		elastic.Process_json_bytes("hackernews", name, string(id), bytes)
 		sendDatum(newData, name, index, data)
