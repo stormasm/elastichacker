@@ -5,10 +5,12 @@
 package elastic
 
 import (
-	"golang.org/x/net/context"
-	elastic "gopkg.in/olivere/elastic.v5"
+	"fmt"
 	"log"
 	"os"
+
+	"golang.org/x/net/context"
+	elastic "gopkg.in/olivere/elastic.v5"
 )
 
 func Process_json_string(index, itype, id string, json string) {
@@ -71,14 +73,16 @@ func Process_json_bytes(index, itype, id string, byteArray []byte) {
 	exists, err := client.IndexExists(index).Do(context.Background())
 	if err != nil {
 		// Handle error
-		panic(err)
+		// panic(err)
+		fmt.Println("process err on IndexExists", err)
 	}
 	if !exists {
 		// Create a new index.
 		createIndex, err := client.CreateIndex(index).Do(context.Background())
 		if err != nil {
 			// Handle error
-			panic(err)
+			// panic(err)
+			fmt.Println("process err on CreateIndex", err)
 		}
 		if !createIndex.Acknowledged {
 			// Not acknowledged
