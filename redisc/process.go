@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
-	"github.com/attic-labs/noms/go/hash"
+    "reflect"
 	"strings"
+	"github.com/attic-labs/noms/go/hash"
+
 	//	"github.com/garyburd/redigo/redis"
 )
 
@@ -53,4 +55,69 @@ func encode_struct_tobytes(itype string, id int, byteArray []byte) []byte {
 		fmt.Println("process_bytes error in Encoder")
 	}
 	return buf.Bytes()
+}
+
+func Read_hash_of_struct(index string, id int) (myhash string) {
+	c := getRedisConn()
+	defer c.Close()
+
+    strary := []string{index, "hash"}
+	indexhash := strings.Join(strary, "")
+
+	values, err := c.Do("HGET", indexhash, id)
+
+    fmt.Println(reflect.TypeOf(values))
+    fmt.Println(err)
+
+    byteary, err := GetBytes(values)
+
+    n := len(byteary)
+    myhash = string(byteary[:n])
+    return myhash
+
+/*
+    valuesText := []string{}
+
+      // Create a string slice using strconv.Itoa.
+      // ... Append strings to it.
+      for i := range values {
+  	number := values[i]
+  	text := strconv.Itoa(number)
+  	valuesText = append(valuesText, text)
+      }
+
+      // Join our string slice.
+      result := strings.Join(valuesText, "+")
+      fmt.Println(result)
+
+*/
+
+
+
+/*
+    s := string(byteArray[:n])
+    fmt.Println(s)
+    fmt.Println(myinterface,err)
+
+    fmt.Println(reflect.TypeOf(myinterface))
+*/
+/*
+    if err != nil {
+        fmt.Println("Read_hash_of_struct error")
+    }
+    fmt.Println(myhash)
+
+    return myhash
+*/
+    //return "ok"
+}
+
+func GetBytes(key interface{}) ([]byte, error) {
+    var buf bytes.Buffer
+    enc := gob.NewEncoder(&buf)
+    err := enc.Encode(key)
+    if err != nil {
+        return nil, err
+    }
+    return buf.Bytes(), nil
 }
