@@ -4,6 +4,7 @@ import (
     "bytes"
     "encoding/gob"
     "fmt"
+    "github.com/attic-labs/noms/go/hash"
 //	"github.com/garyburd/redigo/redis"
 )
 
@@ -29,7 +30,8 @@ func Process_json_bytes(index, itype string, id int, byteArray []byte) error {
     defer c.Close()
 
     nbytearray := process_bytes(itype, id, byteArray)
-
+    hashString := hash.Of(nbytearray).String()
+    fmt.Println(hashString)
     _, err := c.Do("HSET", index, id, nbytearray)
     return err
 }
