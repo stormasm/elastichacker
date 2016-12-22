@@ -36,7 +36,12 @@ func Process_json_bytes(index, itype string, id int, byteArray []byte) error {
 
 	strary := []string{index, "hash"}
 	indexhash := strings.Join(strary, "")
+    strary = []string{index, "set"}
+	indexset := strings.Join(strary, "")
+
 	_, err = c.Do("HSET", indexhash, id, hashString)
+    _, err = c.Do("SADD", indexset, id)
+
 	return err
 }
 
