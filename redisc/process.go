@@ -58,27 +58,15 @@ func Read_hash_of_struct(index string, id int) (myhash string) {
     strary := []string{index, "hash"}
 	indexhash := strings.Join(strary, "")
 
-	values, err := c.Do("HGET", indexhash, id)
+	myinterface, err := c.Do("HGET", indexhash, id)
 
     if err != nil {
         fmt.Println("Read_hash_of_struct hget error")
     }
 
-    //byteary, err := GetBytes(values)
-
-    byteary := values.([]byte)
+    // do a type assertion to convert the interface to a byte array
+    byteary := myinterface.([]byte)
     n := len(byteary)
     myhash = string(byteary[:n])
-    fmt.Println(myhash)
     return myhash
-}
-
-func GetBytes(key interface{}) ([]byte, error) {
-    var buf bytes.Buffer
-    enc := gob.NewEncoder(&buf)
-    err := enc.Encode(key)
-    if err != nil {
-        return nil, err
-    }
-    return buf.Bytes(), nil
 }
