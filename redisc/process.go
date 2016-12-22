@@ -26,11 +26,11 @@ func Process_json_test(index, itype string, id int) error {
 	return err
 }
 
-func Process_json_bytes(index, itype string, id int, byteArray []byte) error {
+func Write_json_bytes(index, itype string, id int, byteArray []byte) error {
 	c := getRedisConn()
 	defer c.Close()
 
-	nbytearray := process_bytes(itype, id, byteArray)
+	nbytearray := encode_struct_tobytes(itype, id, byteArray)
 	hashString := hash.Of(nbytearray).String()
 	_, err := c.Do("HSET", index, id, nbytearray)
 
@@ -45,7 +45,7 @@ func Process_json_bytes(index, itype string, id int, byteArray []byte) error {
 	return err
 }
 
-func process_bytes(itype string, id int, byteArray []byte) []byte {
+func encode_struct_tobytes(itype string, id int, byteArray []byte) []byte {
 	buf := new(bytes.Buffer)
 	enc := gob.NewEncoder(buf)
 	err := enc.Encode(P{itype, id, byteArray})
