@@ -51,6 +51,45 @@ func encode_struct_tobytes(itype string, id int, byteArray []byte) []byte {
 	return buf.Bytes()
 }
 
+func decode_bytes_to_struct(byteArray []byte) {
+
+    bytebuf := bytes.NewBuffer(byteArray)
+    dec := gob.NewDecoder(bytebuf)
+
+    var p P
+
+    err := dec.Decode(&p)
+        if err != nil {
+            fmt.Println("decode error:", err)
+        }
+        fmt.Printf("Id = %d\n", p.Id)
+        fmt.Printf("Id = %s\n", p.Itype)
+
+        n := len(p.Json)
+        json := string(p.Json[:n])
+        fmt.Println(json)
+
+//	hashString := hash.Of(p.Json).String()
+//    fmt.Printf("Hash string = %s\n", hashString)
+}
+
+func Read_json_bytes(index string, id int) error {
+	c := getRedisConn()
+	defer c.Close()
+
+	myinterface, err := c.Do("HGET", index, id)
+    if err != nil {
+        fmt.Println("Read_json_bytes redis hget error")
+    }
+
+    byteary := myinterface.([]byte)
+
+    decode_bytes_to_struct(byteary)
+    //fmt.Println(myinterface, err)
+	//nbytearray := encode_struct_tobytes(itype, id, byteArray)
+    return nil
+}
+
 func Read_hash_of_struct(index string, id int) (myhash string) {
 	c := getRedisConn()
 	defer c.Close()
