@@ -22,12 +22,12 @@ type datum struct {
 func main() {
 	hv := bigSync()
 	fmt.Println(hv.Hash().String())
-/*
-	fmt.Print("Enter text: ")
-	var input string
-	fmt.Scanln(&input)
-	fmt.Println(input)
-*/
+	/*
+		fmt.Print("Enter text: ")
+		var input string
+		fmt.Scanln(&input)
+		fmt.Println(input)
+	*/
 }
 
 func bigSync() types.Value {
@@ -111,14 +111,15 @@ func churn(newIndex <-chan float64, newData chan<- datum) {
 		n := len(bytes)
 		var dst []byte
 		dst = make([]byte, n, n)
-		numofbytes := copy(dst,bytes)
-		fmt.Println("Number of bytes copied = ",numofbytes)
+		//numofbytes := copy(dst,bytes)
+		//fmt.Println("Number of bytes copied = ",numofbytes)
+		copy(dst, bytes)
 		name, data := processBytes(id, dst)
 		fmt.Println(id, name)
 		// elastic.Process_json_bytes("hackernews", name, string(id), bytes)
 		// send data to redis
 		// redisc.Process_json_test("hackernews",name,id)
-		redisc.Process_json_bytes("hackernews",name,id,bytes)
+		redisc.Process_json_bytes("hackernews", name, id, bytes)
 		sendDatum(newData, name, index, data)
 	}
 }
