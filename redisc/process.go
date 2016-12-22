@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
-	"strings"
 	"github.com/attic-labs/noms/go/hash"
+	"strings"
 )
 
 type P struct {
@@ -32,11 +32,11 @@ func Write_json_bytes(index, itype string, id int, byteArray []byte) error {
 
 	strary := []string{index, "hash"}
 	indexhash := strings.Join(strary, "")
-    strary = []string{index, "set"}
+	strary = []string{index, "set"}
 	indexset := strings.Join(strary, "")
 
 	_, err = c.Do("HSET", indexhash, id, hashString)
-    _, err = c.Do("SADD", indexset, id)
+	_, err = c.Do("SADD", indexset, id)
 
 	return err
 }
@@ -51,61 +51,54 @@ func encode_struct_tobytes(itype string, id int, byteArray []byte) []byte {
 	return buf.Bytes()
 }
 
-func decode_bytes_to_struct(byteArray []byte) {
-
-    bytebuf := bytes.NewBuffer(byteArray)
-    dec := gob.NewDecoder(bytebuf)
-
-    var p P
-
-    err := dec.Decode(&p)
-        if err != nil {
-            fmt.Println("decode error:", err)
-        }
-        fmt.Printf("Id = %d\n", p.Id)
-        fmt.Printf("Id = %s\n", p.Itype)
-
-        n := len(p.Json)
-        json := string(p.Json[:n])
-        fmt.Println(json)
-
-//	hashString := hash.Of(p.Json).String()
-//    fmt.Printf("Hash string = %s\n", hashString)
-}
-
 func Read_json_bytes(index string, id int) error {
 	c := getRedisConn()
 	defer c.Close()
 
 	myinterface, err := c.Do("HGET", index, id)
-    if err != nil {
-        fmt.Println("Read_json_bytes redis hget error")
-    }
+	if err != nil {
+		fmt.Println("Read_json_bytes redis hget error")
+	}
 
-    byteary := myinterface.([]byte)
+	byteary := myinterface.([]byte)
+	decode_bytes_to_struct(byteary)
+	return nil
+}
 
-    decode_bytes_to_struct(byteary)
-    //fmt.Println(myinterface, err)
-	//nbytearray := encode_struct_tobytes(itype, id, byteArray)
-    return nil
+func decode_bytes_to_struct(byteArray []byte) {
+	bytebuf := bytes.NewBuffer(byteArray)
+	dec := gob.NewDecoder(bytebuf)
+
+	var p P
+	err := dec.Decode(&p)
+	if err != nil {
+		fmt.Println("decode error:", err)
+	}
+
+	fmt.Printf("Id = %d\n", p.Id)
+	fmt.Printf("Id = %s\n", p.Itype)
+
+	n := len(p.Json)
+	json := string(p.Json[:n])
+	fmt.Println(json)
 }
 
 func Read_hash_of_struct(index string, id int) (myhash string) {
 	c := getRedisConn()
 	defer c.Close()
 
-    strary := []string{index, "hash"}
+	strary := []string{index, "hash"}
 	indexhash := strings.Join(strary, "")
 
 	myinterface, err := c.Do("HGET", indexhash, id)
 
-    if err != nil {
-        fmt.Println("Read_hash_of_struct hget error")
-    }
+	if err != nil {
+		fmt.Println("Read_hash_of_struct hget error")
+	}
 
-    // do a type assertion to convert the interface to a byte array
-    byteary := myinterface.([]byte)
-    n := len(byteary)
-    myhash = string(byteary[:n])
-    return myhash
+	// do a type assertion to convert the interface to a byte array
+	byteary := myinterface.([]byte)
+	n := len(byteary)
+	myhash = string(byteary[:n])
+	return myhash
 }
