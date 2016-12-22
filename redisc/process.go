@@ -64,9 +64,12 @@ func Read_hash_of_struct(index string, id int) (myhash string) {
         fmt.Println("Read_hash_of_struct hget error")
     }
 
-    byteary, err := GetBytes(values)
+    //byteary, err := GetBytes(values)
+
+    byteary := values.([]byte)
     n := len(byteary)
     myhash = string(byteary[:n])
+    fmt.Println(myhash)
     return myhash
 }
 

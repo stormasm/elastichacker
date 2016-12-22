@@ -1,7 +1,8 @@
 package redisc
 
 import (
-	//"fmt"
+	"fmt"
+	"reflect"
 	"testing"
 	"github.com/stretchr/testify/assert"
 )
@@ -17,5 +18,7 @@ func TestReadJsonStruct(t *testing.T) {
 	myhash := Read_hash_of_struct(index,id)
 	assert := assert.New(t)
 	s1 := "67to51ntpmub261mlapf31jvdos04gk5"
-	assert.Equal(t,myhash,s1)
+	fmt.Println(reflect.TypeOf(myhash))
+	fmt.Println(reflect.TypeOf(s1))
+	assert.Equal(myhash,s1)
 }
