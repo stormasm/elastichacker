@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/attic-labs/noms/go/hash"
 	"strings"
+	"github.com/garyburd/redigo/redis"
 )
 
 type P struct {
@@ -90,6 +91,7 @@ func Read_hash_of_struct(index string, id int) (myhash string) {
 	strary := []string{index, "hash"}
 	indexhash := strings.Join(strary, "")
 
+	s, err := redis.String(c.Do("HGET", indexhash, id))
 	myinterface, err := c.Do("HGET", indexhash, id)
 
 	if err != nil {
@@ -100,5 +102,11 @@ func Read_hash_of_struct(index string, id int) (myhash string) {
 	byteary := myinterface.([]byte)
 	n := len(byteary)
 	myhash = string(byteary[:n])
+
+	mycompare := strings.Compare(s,myhash)
+	if mycompare == 0 {
+		fmt.Println("Strings are equal ", s, myhash)
+	}
+
 	return myhash
 }
