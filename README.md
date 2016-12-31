@@ -1,4 +1,4 @@
-# elastichacker
+## Fetch
 
 **Fetch** pulls the data out of Hacker News and writes it to Redis.
 
