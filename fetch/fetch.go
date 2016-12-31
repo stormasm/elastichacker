@@ -11,7 +11,7 @@ import (
 	"github.com/attic-labs/noms/go/types"
 	"github.com/stormasm/firego"
 	//"github.com/stormasm/hackerelastic1/elastic"
-	"github.com/stormasm/hackerelastic1/redisc"
+	"github.com/stormasm/elastichacker/redisc"
 )
 
 type datum struct {
