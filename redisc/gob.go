@@ -9,7 +9,7 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
-type P struct {
+type Doc struct {
 	Itype string
 	Id    int
 	Json  []byte
@@ -52,7 +52,7 @@ func Write_json_bytes(index, itype string, id int, byteArray []byte) error {
 func encode_struct_tobytes(itype string, id int, byteArray []byte) []byte {
 	buf := new(bytes.Buffer)
 	enc := gob.NewEncoder(buf)
-	err := enc.Encode(P{itype, id, byteArray})
+	err := enc.Encode(Doc{itype, id, byteArray})
 	if err != nil {
 		fmt.Println("process_bytes error in Encoder")
 	}
@@ -77,17 +77,17 @@ func decode_bytes_to_struct(byteArray []byte) {
 	bytebuf := bytes.NewBuffer(byteArray)
 	dec := gob.NewDecoder(bytebuf)
 
-	var p P
-	err := dec.Decode(&p)
+	var doc Doc
+	err := dec.Decode(&doc)
 	if err != nil {
 		fmt.Println("decode error:", err)
 	}
 
-	fmt.Printf("Id = %d\n", p.Id)
-	fmt.Printf("Id = %s\n", p.Itype)
+	fmt.Printf("Id = %d\n", doc.Id)
+	fmt.Printf("Id = %s\n", doc.Itype)
 
-	n := len(p.Json)
-	json := string(p.Json[:n])
+	n := len(doc.Json)
+	json := string(doc.Json[:n])
 	fmt.Println(json)
 }
 
