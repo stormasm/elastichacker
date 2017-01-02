@@ -8,6 +8,7 @@ import (
 func hscan(key string) error {
 
 	var (
+		total int
 		count int
 		cursor int64
 		items  []string
@@ -20,6 +21,7 @@ func hscan(key string) error {
 
 	for {
 		values, err := redis.Values(c.Do("HSCAN", key, cursor))
+
 		if err != nil {
 			fmt.Println("hscan error on redis.Values")
 		}
@@ -29,13 +31,15 @@ func hscan(key string) error {
 			fmt.Println("hscan error on redis.Scan")
 		}
 
-		fmt.Println(items)
-		fmt.Println(count)
+		//fmt.Println(items)
+		//fmt.Println()
+		total = total + len(items)
 		count = count + 1
 
 		if cursor == 0 {
 			break
 		}
 	}
+	fmt.Println("count = ", count, "total = ", total, " ", key)
 	return nil
 }
