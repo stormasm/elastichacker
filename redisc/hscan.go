@@ -2,6 +2,7 @@ package redisc
 
 import (
 	"fmt"
+	"reflect"
 	"github.com/garyburd/redigo/redis"
 )
 
@@ -31,15 +32,36 @@ func hscan(key string) error {
 			fmt.Println("hscan error on redis.Scan")
 		}
 
-		//fmt.Println(items)
-		//fmt.Println()
+		fmt.Println("items length = ",len(items))
+		for num, item := range items {
+	  		fmt.Println(num)
+			fmt.Println(reflect.TypeOf(item))
+			fmt.Println(item)
+
+			_, err = c.Do("SADD", "storyset", item[0])
+			if err != nil {
+				fmt.Println("error on SADD")
+			}
+  		}
+
+		//fmt.Println(reflect.TypeOf(items))
+
+/*
+		fmt.Println(items[0])
+		fmt.Println(items[1])
+		_, err = c.Do("SADD", "storyset", items[0])
+		if err != nil {
+			fmt.Println("error on SADD")
+		}
+*/
+		fmt.Println("count = ",count)
+		fmt.Println("\n\n")
 		total = total + len(items)
 		count = count + 1
-
 		if cursor == 0 {
 			break
 		}
 	}
-	fmt.Println("count = ", count, "total = ", total, " ", key)
+	fmt.Println("total = ", total/2, " ", key)
 	return nil
 }
