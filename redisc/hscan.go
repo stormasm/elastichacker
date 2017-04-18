@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func hscan(key string) error {
+func Hscan(key string) error {
 
 	var (
 		setkeyname string
