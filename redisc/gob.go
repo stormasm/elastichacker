@@ -111,8 +111,8 @@ func Read_hash_of_struct(index string, id int) (myhash string) {
 	myhash = string(byteary[:n])
 
 	mycompare := strings.Compare(s,myhash)
-	if mycompare == 0 {
-		fmt.Println("Strings are equal ", s, myhash)
+	if mycompare != 0 {
+		fmt.Println("Strings are not equal ", s, myhash)
 	}
 
 	return myhash

@@ -21,6 +21,6 @@ func TestReadJsonStruct(t *testing.T) {
 
 	myhash := Read_hash_of_struct(index, id)
 	assert := assert.New(t)
-	s1 := "67to51ntpmub261mlapf31jvdos04gk5"
+	s1 := "ddapqcpihp470evj6h78ks7lu54a460c"
 	assert.Equal(myhash, s1)
 }

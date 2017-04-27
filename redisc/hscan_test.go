@@ -5,6 +5,6 @@ import (
 )
 
 func TestHscan(t *testing.T) {
-	hscan("story")
-	hscan("comment")
+	Hscan("story")
+	Hscan("comment")
 }
