@@ -6,7 +6,12 @@ import (
 	"strings"
 )
 
-func Hscan(key string) error {
+type Datum struct {
+	hnid string    // hackernews id
+	json string
+}
+
+func Hscan(key string, newData chan<- Datum) error {
 
 	var (
 		hackernewsid string
@@ -48,9 +53,14 @@ func Hscan(key string) error {
 				}
 			}
 			if evenodd == 1 {
-				fmt.Println(hackernewsid)
-				fmt.Println(item)
+				//fmt.Println(hackernewsid)
+				//fmt.Println(item)
 				// Build the struct here and put it on a channel
+				c := Datum{
+					hnid:hackernewsid,
+					json:item,
+				}
+				newData <- c
 			}
 		}
 

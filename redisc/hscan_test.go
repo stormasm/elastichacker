@@ -5,6 +5,10 @@ import (
 )
 
 func TestHscan(t *testing.T) {
-	Hscan("story")
-	Hscan("comment")
+
+	newStory := make(chan Datum, 100)
+	newComment := make(chan Datum, 100)
+
+	Hscan("story", newStory)
+	Hscan("comment", newComment)
 }
