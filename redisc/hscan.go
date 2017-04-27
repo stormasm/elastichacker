@@ -9,6 +9,7 @@ import (
 func Hscan(key string) error {
 
 	var (
+		hackernewsid string
 		setkeyname string
 		total  int
 		count  int
@@ -40,10 +41,16 @@ func Hscan(key string) error {
 			evenodd := num % 2
 			// Grab the ID
 			if evenodd == 0 {
+				hackernewsid = item
 				_, err = c.Do("SADD", setkeyname, item)
 				if err != nil {
 					fmt.Println("error on SADD")
 				}
+			}
+			if evenodd == 1 {
+				fmt.Println(hackernewsid)
+				fmt.Println(item)
+				// Build the struct here and put it on a channel
 			}
 		}
 
