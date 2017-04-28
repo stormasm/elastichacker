@@ -16,7 +16,7 @@ import (
 // typ      Elasticsearch type name
 // bulkSize Number of documents to collect before committing
 
-func gorun(index string, typ string, bulkSize int) {
+func insert(index string, typ string, bulkSize int) {
 
 	// Do a trace log
 	tracelog := log.New(os.Stdout, "", 0)
@@ -100,5 +100,5 @@ func gorun(index string, typ string, bulkSize int) {
 }
 
 func main() {
-	gorun("warehouse", "product", 3)
+	insert("warehouse", "product", 3)
 }
