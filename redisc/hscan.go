@@ -56,11 +56,11 @@ func Hscan(key string, newData chan<- Datum) error {
 				//fmt.Println(hackernewsid)
 				//fmt.Println(item)
 				// Build the struct here and put it on a channel
-				c := Datum{
+				mydatum := Datum{
 					hnid:hackernewsid,
 					json:item,
 				}
-				newData <- c
+				newData <- mydatum
 			}
 		}
 
