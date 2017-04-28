@@ -7,8 +7,8 @@ import (
 )
 
 type Datum struct {
-	hnid string // hackernews id
-	json string
+	Hnid string // hackernews id
+	Json string
 }
 
 func Hscan(key string, newData chan<- Datum) error {
@@ -53,8 +53,8 @@ func Hscan(key string, newData chan<- Datum) error {
 			if evenodd == 1 {
 				// Build the struct here and put it on a channel
 				mydatum := Datum{
-					hnid: hackernewsid,
-					json: item,
+					Hnid: hackernewsid,
+					Json: item,
 				}
 				newData <- mydatum
 			}
