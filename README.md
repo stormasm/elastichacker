@@ -1,3 +1,12 @@
+
+
+**bulkredis** talks to **redisc.Hscan** through 2 parameters
+
+1. a redis hashmap key where the documents are stored
+2. a channel which contains redisc.Datum values which is a struct with an ID and a JSON document.
+
+
+
 ## Fetch
 
 **Fetch** pulls the data out of Hacker News and writes it to Redis.
@@ -41,4 +50,4 @@ the internet is INFINITELY slower than reading data from Redis.
 And it also decouples these processes which can actually run
 simultaneously anyway.  Having Redis sitting there as a cache
 is what it does really well anyway and Redis always acts as
-a really nice interface anyway. 
+a really nice interface anyway.
