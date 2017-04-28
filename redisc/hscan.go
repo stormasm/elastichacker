@@ -7,7 +7,7 @@ import (
 )
 
 type Datum struct {
-	hnid string    // hackernews id
+	hnid string // hackernews id
 	json string
 }
 
@@ -15,11 +15,11 @@ func Hscan(key string, newData chan<- Datum) error {
 
 	var (
 		hackernewsid string
-		setkeyname string
-		total  int
-		count  int
-		cursor int64
-		items  []string
+		setkeyname   string
+		total        int
+		count        int
+		cursor       int64
+		items        []string
 	)
 
 	c := getRedisConn()
@@ -57,8 +57,8 @@ func Hscan(key string, newData chan<- Datum) error {
 				//fmt.Println(item)
 				// Build the struct here and put it on a channel
 				mydatum := Datum{
-					hnid:hackernewsid,
-					json:item,
+					hnid: hackernewsid,
+					json: item,
 				}
 				newData <- mydatum
 			}

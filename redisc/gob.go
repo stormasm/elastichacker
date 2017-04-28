@@ -5,8 +5,8 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/attic-labs/noms/go/hash"
-	"strings"
 	"github.com/garyburd/redigo/redis"
+	"strings"
 )
 
 type Doc struct {
@@ -110,7 +110,7 @@ func Read_hash_of_struct(index string, id int) (myhash string) {
 	n := len(byteary)
 	myhash = string(byteary[:n])
 
-	mycompare := strings.Compare(s,myhash)
+	mycompare := strings.Compare(s, myhash)
 	if mycompare != 0 {
 		fmt.Println("Strings are not equal ", s, myhash)
 	}
