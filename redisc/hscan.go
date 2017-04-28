@@ -37,8 +37,6 @@ func Hscan(key string, newData chan<- Datum) error {
 			fmt.Println("hscan error on redis.Scan")
 		}
 
-		// fmt.Println("items length = ", len(items))
-
 		strary := []string{"set", key}
 		setkeyname = strings.Join(strary, "")
 
@@ -53,8 +51,6 @@ func Hscan(key string, newData chan<- Datum) error {
 				}
 			}
 			if evenodd == 1 {
-				//fmt.Println(hackernewsid)
-				//fmt.Println(item)
 				// Build the struct here and put it on a channel
 				mydatum := Datum{
 					hnid: hackernewsid,
@@ -63,8 +59,6 @@ func Hscan(key string, newData chan<- Datum) error {
 				newData <- mydatum
 			}
 		}
-
-		// fmt.Println("count = ", count)
 		total = total + len(items)
 		count = count + 1
 		if cursor == 0 {
