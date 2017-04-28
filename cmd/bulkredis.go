@@ -59,9 +59,9 @@ func gorun(index string, typ string, bulkSize int) {
 
 		for d := range docsc {
 			// Enqueue the document
-			countstr := d.Hnid
+			myid := d.Id
 			mydoc := d.Json
-			bulk.Add(elastic.NewBulkStringRequest().Id(countstr).SetSource(mydoc))
+			bulk.Add(elastic.NewBulkStringRequest().Id(myid).SetSource(mydoc))
 
 			if bulk.NumberOfActions() >= bulkSize {
 				// Commit

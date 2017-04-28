@@ -7,19 +7,19 @@ import (
 )
 
 type Datum struct {
-	Hnid string // hackernews id
-	Json string
+	Id   string // elastic document id
+	Json string // elastic json document
 }
 
 func Hscan(key string, newData chan<- Datum) error {
 
 	var (
-		hackernewsid string
-		setkeyname   string
-		total        int
-		count        int
-		cursor       int64
-		items        []string
+		myid       string
+		setkeyname string
+		total      int
+		count      int
+		cursor     int64
+		items      []string
 	)
 
 	c := getRedisConn()
@@ -37,14 +37,15 @@ func Hscan(key string, newData chan<- Datum) error {
 			fmt.Println("hscan error on redis.Scan")
 		}
 
-		strary := []string{"set", key}
+		// a Redis Set with a unique set of Elastic Document IDs
+		strary := []string{key, "set"}
 		setkeyname = strings.Join(strary, "")
 
 		for num, item := range items {
 			evenodd := num % 2
 			// Grab the ID
 			if evenodd == 0 {
-				hackernewsid = item
+				myid = item
 				_, err = c.Do("SADD", setkeyname, item)
 				if err != nil {
 					fmt.Println("error on SADD")
@@ -53,7 +54,7 @@ func Hscan(key string, newData chan<- Datum) error {
 			if evenodd == 1 {
 				// Build the struct here and put it on a channel
 				mydatum := Datum{
-					Hnid: hackernewsid,
+					Id:   myid,
 					Json: item,
 				}
 				newData <- mydatum
