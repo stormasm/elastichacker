@@ -1,8 +1,8 @@
 
 
-**cmd.bulkredis** talks to **redisc.Hscan** through 2 parameters
+**cmd.bulkredis** talks to the interface **redisc.Hscan** through 2 parameters:
 
-1. a [Redis hashmap](https://redis.io/commands#hash) key where the field is the elastic document ID and the value is the JSON document.
+1. a [Redis Hashmap](https://redis.io/commands#hash) key where the field is the elastic document ID and the value is the JSON document.
 2. a channel which contains the struct redisc.Datum with the elastic document ID and JSON document.
 
 
