@@ -1,14 +1,14 @@
 
 
-##### redishacker
+#### redishacker
 
 knows nothing about elastic, moves data from hackernews into redis
 
-##### elasticredis
+#### elasticredis
 
 knows nothing about hackernews, moves data from from redis into elastic
 
-##### elastichacker
+#### elastichacker
 
 combo of **both** above
 
