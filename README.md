@@ -1,5 +1,19 @@
 
 
+##### redishacker
+
+knows nothing about elastic, moves data from hackernews into redis
+
+##### elasticredis
+
+knows nothing about hackernews, moves data from from redis into elastic
+
+##### elastichacker
+
+combo of **both** above
+
+moves data from hackernews into elastic via redis
+
 **cmd.bulkredis** talks to the interface **redisc.Hscan** through 2 parameters:
 
 1. a [Redis Hashmap](https://redis.io/commands#hash) key where the field is the elastic document ID and the value is the JSON document.
