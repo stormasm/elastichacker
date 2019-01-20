@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/olivere/elastic"
+	"github.com/stormasm/elastic02"
 	"github.com/stormasm/elastichacker/redisc"
 	"golang.org/x/sync/errgroup"
 )
