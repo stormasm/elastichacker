@@ -1,4 +1,8 @@
 
+```
+cd cmd
+go build -o bulkredis bulkredis.go
+```
 
 #### redishacker
 
