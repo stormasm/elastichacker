@@ -13,10 +13,10 @@ import (
 )
 
 // index    Elasticsearch index name
-// typ      Elasticsearch type name
+// estype   Elasticsearch type name
 // bulkSize Number of documents to collect before committing
 
-func insert(index string, typ string, bulkSize int) {
+func insert(index string, estype string, bulkSize int) {
 
 	// Do a trace log
 	tracelog := log.New(os.Stdout, "", 0)
@@ -43,8 +43,8 @@ func insert(index string, typ string, bulkSize int) {
 
 		// Eventually one could pass in an array of strings which
 		// would be the keys one can pull from redis...
-		go redisc.Hscan("story", docsc)
-		go redisc.Hscan("comment", docsc)
+		// go redisc.Hscan("story", docsc)
+		go redisc.Hscan(estype, docsc)
 
 		// This is a hack, need to fix it...
 		var input string
@@ -55,7 +55,7 @@ func insert(index string, typ string, bulkSize int) {
 
 	// Second goroutine will consume the documents sent from the first and bulk insert into ES
 	g.Go(func() error {
-		bulk := client.Bulk().Index(index).Type(typ)
+		bulk := client.Bulk().Index(index).Type(estype)
 
 		for d := range docsc {
 			// Enqueue the document
@@ -100,5 +100,5 @@ func insert(index string, typ string, bulkSize int) {
 }
 
 func main() {
-	insert("warehouse", "product", 3)
+	insert("hackernews", "story", 4)
 }
