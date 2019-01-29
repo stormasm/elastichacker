@@ -100,5 +100,5 @@ func insert(index string, estype string, bulkSize int) {
 }
 
 func main() {
-	insert("hackernews", "story", 4)
+	insert("hackernews", "story", 30)
 }
